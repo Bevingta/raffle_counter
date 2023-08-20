@@ -93,8 +93,8 @@ def split_sales(num, sale):
         legal_names[fourth] += sale
 
 
-#just for testing to set them all back to 0
-for name in legal_names:                     #DELETE BEFORE SENDING#
+#sets all values to 0 for student counts
+for name in legal_names:                    #if this stays in could delete save function to delete the need for this one too
     legal_names[name] = 0
 
 with open("nicknames.json", "r") as file:
@@ -184,8 +184,15 @@ with open("legal_names.py", "w") as out:
 print("Done")
 print("")
 
+total = 0
+
 for name in legal_names:
     print(f"{name}: {legal_names[name]}")
+    total += legal_names[name]
+
+print("")
+print(f"Total Sales: {total}")
+
 
 if len(problem_children) > 0:
     print("Problem Children:")
