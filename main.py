@@ -3,6 +3,7 @@ import json
 import pandas as pd
 from legal_names import legal_names
 
+problem_children = []
 
 def words_to_year(name, word, year):
     name = name.replace(word, '')
@@ -27,23 +28,69 @@ def get_year(name):
 
     name = name.lower()
     if "senior" in name:
-        words_to_year(name, 'senior', '24')
+        name = words_to_year(name, 'senior', '24')
+        return name
     elif "junior" in name:
-        words_to_year(name, 'junior', '25')
+        name = words_to_year(name, 'junior', '25')
+        return name
     elif "sophomore" in name:
-        words_to_year(name, 'sophomore', '26')
+        name = words_to_year(name, 'sophomore', '26')
+        return name
     elif "sophmore" in name:
-        words_to_year(name, 'sophmore', '26')
+        name = words_to_year(name, 'sophmore', '26')
+        return name
     elif "freshman" in name:
-        words_to_year(name, 'freshman', '27')
+        name = words_to_year(name, 'freshman', '27')
+        return name
     else:
         return name
 
 
-def split_sales(num):
+def split_sales(num, sale):
     i = 1
     while i <= num:
-        None
+        if i == 1:
+            first = input("First students name: ")
+            if first not in legal_names:
+                print(f"{first} not found in directory")
+                print("Ensure you put the year in the correct format")
+                first = input("First students name: ")
+        elif i == 2:
+            second = input("Second students name: ")
+            if second not in legal_names:
+                print(f"{second} not found in directory")
+                print("Ensure you put the year in the correct format")
+                second = input("Second students name: ")
+        elif i == 3:
+            third = input("Third students name: ")
+            if third not in legal_names:
+                print(f"{third} not found in directory")
+                print("Ensure you put the year in the correct format")
+                third = input("Third students name: ")
+        elif i == 4:
+            fourth = input("Fourth students name: ")
+            if fourth not in legal_names:
+                print(f"{fourth} not found in directory")
+                print("Ensure you put the year in the correct format")
+                third = input("Fourth students name: ")
+        i += 1
+    if num == 2:
+        sale = sale / 2
+        legal_names[first] += sale
+        legal_names[second] += sale
+
+    elif num == 3:
+        sale = sale / 3
+        legal_names[first] += sale
+        legal_names[second] += sale
+        legal_names[third] += sale
+
+    elif num == 4:
+        sale = sale / 4
+        legal_names[first] += sale
+        legal_names[second] += sale
+        legal_names[third] += sale
+        legal_names[fourth] += sale
 
 
 #just for testing to set them all back to 0
@@ -62,6 +109,15 @@ while first_step:
         first_step = False
     except FileNotFoundError:
         print("File Not Found. Make sure that you downloaded it to the same place as this python file")
+
+print("")
+print("Special Commands:")
+print("'Split 2' - Splits the sales between two students")
+print("'Split 3' - Splits the sales between three students")
+print("'Split 4' - Splits the sales between four students")
+print("'Apply to any' (case sensitive) - Adds the sale to the 'Apply to any' category")
+print("'Problem Child' (case sensitive) - If the name is unrecognizable.")
+print(" Flags and returns the name at the end. Adds their sale to a separate category for totaling.")
 
 #reads through the names in the column 'Name' and checks them against the legal name list
 col_name = "Name"
@@ -83,15 +139,26 @@ for row, name in enumerate(df[col_name]):
 
     #triggered if it is not a legal name or nickname
     else:
+        print("")
         print(f"Unrecognized Name: {name}")
         entering_name = True
         while entering_name:
-            print("")
             legal = input(f"What is this {name}'s legal name?\nInclude the graduation year (e.g. '25 at the end)\n")
 
-            if legal == "Split 2":
-                split_sales(2)
+
+            if legal.lower() == "split 2":
+                split_sales(2, sale)
+                entering_name = False
+            elif legal.lower() == "split 3":
+                split_sales(3, sale)
+                entering_name = False
+            elif legal.lower() == "split 4":
+                split_sales(4, sale)
+                entering_name = False
+
             elif legal in legal_names:
+                if legal == "Problem child":
+                    problem_children.append(name)
                 legal_names[legal] += sale
                 entering_name = False
                 nicknames[name] = legal
@@ -119,5 +186,10 @@ print("")
 
 for name in legal_names:
     print(f"{name}: {legal_names[name]}")
+
+if len(problem_children) > 0:
+    print("Problem Children:")
+    for name in problem_children:
+        print(name)
 
 
