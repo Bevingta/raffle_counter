@@ -4,6 +4,7 @@ import pandas as pd
 from legal_names import legal_names
 
 problem_children = []
+problem_children_sales = []
 
 def words_to_year(name, word, year):
     name = name.replace(word, '')
@@ -26,6 +27,7 @@ def get_year(name):
         year = year[2:4]
         return name + " '" + year
 
+    #checks for word version of class years
     name = name.lower()
     if "senior" in name:
         name = words_to_year(name, 'senior', '24')
@@ -45,7 +47,7 @@ def get_year(name):
     else:
         return name
 
-
+#splits the sales between x number of students
 def split_sales(num, sale):
     i = 1
     while i <= num:
@@ -116,8 +118,8 @@ print("'Split 2' - Splits the sales between two students")
 print("'Split 3' - Splits the sales between three students")
 print("'Split 4' - Splits the sales between four students")
 print("'Apply to any' (case sensitive) - Adds the sale to the 'Apply to any' category")
-print("'Problem Child' (case sensitive) - If the name is unrecognizable.")
-print(" Flags and returns the name at the end. Adds their sale to a separate category for totaling.")
+print("'Skip' - If the name is unrecognizable. Flags and returns the name at the end. Adds their sale to a separate category for totaling.")
+print(" ")
 
 #reads through the names in the column 'Name' and checks them against the legal name list
 col_name = "Name"
@@ -145,7 +147,7 @@ for row, name in enumerate(df[col_name]):
         while entering_name:
             legal = input(f"What is this {name}'s legal name?\nInclude the graduation year (e.g. '25 at the end)\n")
 
-
+            #looks for the special commands
             if legal.lower() == "split 2":
                 split_sales(2, sale)
                 entering_name = False
@@ -156,9 +158,14 @@ for row, name in enumerate(df[col_name]):
                 split_sales(4, sale)
                 entering_name = False
 
+            elif legal.lower() == "skip":
+                problem_children.append(name)
+                problem_children_sales.append(sale)
+                legal_names["Skipped"] += sale
+                entering_name = False
+
+            #if no special commands triggered then makes it a nickname
             elif legal in legal_names:
-                if legal == "Problem child":
-                    problem_children.append(name)
                 legal_names[legal] += sale
                 entering_name = False
                 nicknames[name] = legal
@@ -186,17 +193,20 @@ print("")
 
 total = 0
 
+#prints the names and total sales of all students in the Excel
 for name in legal_names:
     print(f"{name}: {legal_names[name]}")
     total += legal_names[name]
 
+#prints the total sales
 print("")
 print(f"Total Sales: {total}")
+print("")
 
-
+#prints the skipped kids and their totals
 if len(problem_children) > 0:
-    print("Problem Children:")
-    for name in problem_children:
-        print(name)
+    print("Skipped:")
+    for idx, name in enumerate(problem_children):
+        print(f"{name}: {problem_children_sales[idx]}")
 
 
