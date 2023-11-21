@@ -3,6 +3,8 @@ import json
 import pandas as pd
 from legal_names import legal_names
 
+
+#creates a ductionary for problem children
 problem_children = []
 problem_children_sales = []
 
@@ -12,6 +14,7 @@ def words_to_year(name, word, year):
     name = name.title()
     return name + " '" + year
 
+#gets the year of the student
 def get_year(name):
     year = ""
     for letter in name:
@@ -74,7 +77,7 @@ def split_sales(num, sale):
             if fourth not in legal_names:
                 print(f"{fourth} not found in directory")
                 print("Ensure you put the year in the correct format")
-                third = input("Fourth students name: ")
+                fourth = input("Fourth students name: ")
         i += 1
     if num == 2:
         sale = sale / 2
@@ -114,6 +117,7 @@ while first_step:
 
 print("")
 print("Special Commands:")
+print("'Back' - Goes back one step")
 print("'Split 2' - Splits the sales between two students")
 print("'Split 3' - Splits the sales between three students")
 print("'Split 4' - Splits the sales between four students")
