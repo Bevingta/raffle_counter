@@ -2,6 +2,7 @@
 import json
 import pandas as pd
 from legal_names import legal_names
+import time
 
 
 #creates a dictionary for problem children
@@ -138,12 +139,18 @@ print(" ")
 #TODO
 unrecognized = 0
 recognized = 0
+total = 0
+
+# Get the current time (start time)
+start_time = time.time()
 
 #reads through the names in the column 'Name' and checks them against the legal name list
 col_name = "Name"
 for row, name in enumerate(df[col_name]):
     #gets the sale value for the student
     sale = df.iat[row, 3]
+    #TODO
+    total += sale
 
     #formats the year automatically
     name = get_year(name)
@@ -165,7 +172,7 @@ for row, name in enumerate(df[col_name]):
     else:
         print("")
         print(f"Unrecognized Name: {name}")
-        #TODO
+        #TODO (switch unrecognized back to true and delete total add
         unrecognized += 1
         entering_name = False
         while entering_name:
@@ -218,12 +225,14 @@ with open("venv/legal_names.py", "w") as out:
 print("Done")
 print("")
 
-total = 0
+#TODO (add back in total here)
 
 #prints the names and total sales of all students in the Excel
 for name in legal_names:
-    print(f"{name}: {legal_names[name]}")
-    total += legal_names[name]
+    if legal_names[name] > 0:
+        print(f"{name}: {legal_names[name]}")
+        #TODO(uncomment)
+        #total += legal_names[name]
 
 #prints the total sales
 print("")
@@ -237,8 +246,17 @@ if len(problem_children) > 0:
         print(f"{name}: {problem_children_sales[idx]}")
 
 #TODO
+print(f"Total students: {unrecognized + recognized}")
 print(f"Unrecognized: {unrecognized}")
 print(f"Recognized: {recognized}")
+
+# Get the current time again (end time)
+end_time = time.time()
+
+# Calculate the elapsed time in seconds
+elapsed_time = end_time - start_time
+
+print(f"Elapsed Time: {elapsed_time} seconds")
 
 
 
