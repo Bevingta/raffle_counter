@@ -4,7 +4,7 @@ import pandas as pd
 from legal_names import legal_names
 
 
-#creates a ductionary for problem children
+#creates a dictionary for problem children
 problem_children = []
 problem_children_sales = []
 
@@ -56,24 +56,32 @@ def split_sales(num, sale):
     while i <= num:
         if i == 1:
             first = input("First students name: ")
+            if first.lower() == "back":
+                return False
             if first not in legal_names:
                 print(f"{first} not found in directory")
                 print("Ensure you put the year in the correct format")
                 first = input("First students name: ")
         elif i == 2:
             second = input("Second students name: ")
+            if second.lower() == "back":
+                return False
             if second not in legal_names:
                 print(f"{second} not found in directory")
                 print("Ensure you put the year in the correct format")
                 second = input("Second students name: ")
         elif i == 3:
             third = input("Third students name: ")
+            if third.lower() == "back":
+                return False
             if third not in legal_names:
                 print(f"{third} not found in directory")
                 print("Ensure you put the year in the correct format")
                 third = input("Third students name: ")
         elif i == 4:
             fourth = input("Fourth students name: ")
+            if fourth.lower() == "back":
+                return False
             if fourth not in legal_names:
                 print(f"{fourth} not found in directory")
                 print("Ensure you put the year in the correct format")
@@ -97,12 +105,14 @@ def split_sales(num, sale):
         legal_names[third] += sale
         legal_names[fourth] += sale
 
+    return True
+
 
 #sets all values to 0 for student counts
 for name in legal_names:                    #if this stays in could delete save function to delete the need for this one too
     legal_names[name] = 0
 
-with open("nicknames.json", "r") as file:
+with open("venv/nicknames.json", "r") as file:
     nicknames = json.load(file)
 
 #opens an Excel file and reads the content
@@ -125,11 +135,15 @@ print("'Apply to any' (case sensitive) - Adds the sale to the 'Apply to any' cat
 print("'Skip' - If the name is unrecognizable. Flags and returns the name at the end. Adds their sale to a separate category for totaling.")
 print(" ")
 
+#TODO
+unrecognized = 0
+recognized = 0
+
 #reads through the names in the column 'Name' and checks them against the legal name list
 col_name = "Name"
 for row, name in enumerate(df[col_name]):
     #gets the sale value for the student
-    sale = df.iat[row, 2]
+    sale = df.iat[row, 3]
 
     #formats the year automatically
     name = get_year(name)
@@ -137,30 +151,39 @@ for row, name in enumerate(df[col_name]):
     #checks if the name is their legal name
     if name in legal_names:
         legal_names[name] += sale
+        #TODO
+        recognized += 1
 
     #checks if their name is a nickname
     elif name in nicknames:
         legal = nicknames[name]
         legal_names[legal] += sale
+        #TODO
+        recognized += 1
 
     #triggered if it is not a legal name or nickname
     else:
         print("")
         print(f"Unrecognized Name: {name}")
-        entering_name = True
+        #TODO
+        unrecognized += 1
+        entering_name = False
         while entering_name:
             legal = input(f"What is this {name}'s legal name?\nInclude the graduation year (e.g. '25 at the end)\n")
 
             #looks for the special commands
             if legal.lower() == "split 2":
-                split_sales(2, sale)
-                entering_name = False
+                split = split_sales(2, sale)
+                if split:
+                    entering_name = False
             elif legal.lower() == "split 3":
-                split_sales(3, sale)
-                entering_name = False
+                split = split_sales(3, sale)
+                if split:
+                    entering_name = False
             elif legal.lower() == "split 4":
-                split_sales(4, sale)
-                entering_name = False
+                split = split_sales(4, sale)
+                if split:
+                    entering_name = False
 
             elif legal.lower() == "skip":
                 problem_children.append(name)
@@ -180,14 +203,14 @@ for row, name in enumerate(df[col_name]):
 #writes the new nicknames into the file
 print("")
 print("Saving Nicknames...")
-with open('nicknames.json', 'w') as file:
+with open('venv/nicknames.json', 'w') as file:
     json.dump(nicknames, file, indent=4)
 print("Done")
 
 #writes the new sales values into the file
 print("")
 print("Saving Sales...")
-with open("legal_names.py", "w") as out:
+with open("venv/legal_names.py", "w") as out:
     out.write("legal_names = {\n")
     for name, sales in legal_names.items():
         out.write(f'    "{name}":{int(sales)},\n')
@@ -212,5 +235,10 @@ if len(problem_children) > 0:
     print("Skipped:")
     for idx, name in enumerate(problem_children):
         print(f"{name}: {problem_children_sales[idx]}")
+
+#TODO
+print(f"Unrecognized: {unrecognized}")
+print(f"Recognized: {recognized}")
+
 
 
