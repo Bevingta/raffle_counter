@@ -1391,4 +1391,5 @@ legal_names = {
     "Nicholas Zografos '25":0,
     "Cristian Zuniga '25":0,
     "Oscar Zuniga '27":0,
+    "Skipped":0
 }

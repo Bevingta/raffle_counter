@@ -158,23 +158,17 @@ for row, name in enumerate(df[col_name]):
     #checks if the name is their legal name
     if name in legal_names:
         legal_names[name] += sale
-        #TODO
-        recognized += 1
 
     #checks if their name is a nickname
     elif name in nicknames:
         legal = nicknames[name]
         legal_names[legal] += sale
-        #TODO
-        recognized += 1
 
     #triggered if it is not a legal name or nickname
     else:
         print("")
         print(f"Unrecognized Name: {name}")
-        #TODO (switch unrecognized back to true and delete total add
-        unrecognized += 1
-        entering_name = False
+        entering_name = True
         while entering_name:
             legal = input(f"What is this {name}'s legal name?\nInclude the graduation year (e.g. '25 at the end)\n")
 
@@ -231,8 +225,7 @@ print("")
 for name in legal_names:
     if legal_names[name] > 0:
         print(f"{name}: {legal_names[name]}")
-        #TODO(uncomment)
-        #total += legal_names[name]
+
 
 #prints the total sales
 print("")
@@ -245,10 +238,9 @@ if len(problem_children) > 0:
     for idx, name in enumerate(problem_children):
         print(f"{name}: {problem_children_sales[idx]}")
 
-#TODO
-print(f"Total students: {unrecognized + recognized}")
-print(f"Unrecognized: {unrecognized}")
-print(f"Recognized: {recognized}")
+    print("")
+    print("")
+
 
 # Get the current time again (end time)
 end_time = time.time()
