@@ -113,7 +113,7 @@ def split_sales(num, sale):
 for name in legal_names:                    #if this stays in could delete save function to delete the need for this one too
     legal_names[name] = 0
 
-with open("venv/nicknames.json", "r") as file:
+with open("nicknames.json", "r") as file:
     nicknames = json.load(file)
 
 #opens an Excel file and reads the content
@@ -204,14 +204,14 @@ for row, name in enumerate(df[col_name]):
 #writes the new nicknames into the file
 print("")
 print("Saving Nicknames...")
-with open('venv/nicknames.json', 'w') as file:
+with open('nicknames.json', 'w') as file:
     json.dump(nicknames, file, indent=4)
 print("Done")
 
 #writes the new sales values into the file
 print("")
 print("Saving Sales...")
-with open("venv/legal_names.py", "w") as out:
+with open("legal_names.py", "w") as out:
     out.write("legal_names = {\n")
     for name, sales in legal_names.items():
         out.write(f'    "{name}":{int(sales)},\n')
